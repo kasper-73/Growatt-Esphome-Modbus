@@ -1,0 +1,666 @@
+substitutions:
+  device_description: Growatt Inverter
+  friendly_name:  Growatt Inverter
+  name: Growatt
+
+esphome:
+  name: growatt
+  friendly_name: Growatt
+
+esp32:
+  board: esp32dev
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Growatt Fallback Hotspot"
+    password: "lKRqERVEDkqF"
+
+captive_portal:
+
+web_server:
+  port: 80
+
+uart:
+  - id: uartgrowatt
+    baud_rate: 9600
+    tx_pin: GPIO17
+    rx_pin: GPIO16
+
+modbus:
+  id: modbus1
+  uart_id: uartgrowatt
+  
+modbus_controller:
+  - id: growatt
+    ## the Modbus device addr
+    address: 0x1
+    modbus_id: modbus1
+    setup_priority: -10  
+
+select:
+  - platform: modbus_controller
+    name: "${name} 1044 Priority"
+    address: 1044
+    value_type: U_WORD
+    optionsmap:
+      "Load": 0
+      "Battery": 1
+      "Grid": 2 
+
+  - platform: modbus_controller
+    name: "${name} 3049 Priority"
+    address: 3049
+    value_type: U_WORD
+    optionsmap:
+      "AC Charge On": 1
+      "AC Charge Off": 0
+
+
+sensor:
+  - platform: modbus_controller
+    name: "${name} 0001 Ppv"
+    address: 1
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0003 Vpv1"
+    address: 3
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0004 PV1Curr"
+    address: 4
+    register_type: "read"
+    unit_of_measurement: A
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0005 Ppv1"
+    address: 5
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0007 Vpv2"
+    address: 7
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0008 PV2Curr"
+    address: 8
+    register_type: "read"
+    unit_of_measurement: A
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0009 Ppv2"
+    address: 9
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0035  Pac"
+    address: 35
+    register_type: "read"
+    unit_of_measurement: W
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0037  Fac"
+    address: 37
+    register_type: "read"
+    unit_of_measurement: Hz
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.01
+
+  - platform: modbus_controller
+    name: "${name} 0038 Vac1"
+    address: 38
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0039 Aac1"
+    address: 39
+    register_type: "read"
+    unit_of_measurement: A
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0040 Pac1"
+    address: 40
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0042 Vac2"
+    address: 42
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0043 Aac2"
+    address: 43
+    register_type: "read"
+    unit_of_measurement: A
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0044 Pac2"
+    address: 44
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0046 Vac3"
+    address: 46
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0047 Aac3"
+    address: 47
+    register_type: "read"
+    unit_of_measurement: A
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0048 Pac3"
+    address: 48
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0050 Vac_RS"
+    address: 50
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0051 Vac_SS"
+    address: 51
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0052 Vac_TS"
+    address: 52
+    register_type: "read"
+    unit_of_measurement: V
+    icon: mdi:flash
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0053 Eactoday H"
+    address: 53
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 0055 Eac total H"
+    address: 55
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1    
+
+  - platform: modbus_controller
+    name: "${name} 0055-1 Eac total H"
+    address: 55
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+  - platform: modbus_controller
+    name: "${name} 0055-2 Eac total L"
+    address: 56
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1 
+
+  - platform: modbus_controller
+    name: "${name} 0057 Time Total"
+    address: 57
+    register_type: "read"
+    value_type: U_DWORD
+    accuracy_decimals: 1 
+    filters:
+    - multiply: 0.5    
+
+  - platform: modbus_controller
+    name: "${name} 0059 Epv today H"
+    address: 59
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1   
+
+  - platform: modbus_controller
+    name: "${name} 0061 Epv1_total H"
+    address: 61
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1  
+
+  - platform: modbus_controller
+    name: "${name} 0063 Epv2_today H"
+    address: 63
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1  
+
+  - platform: modbus_controller
+    name: "${name} 0065 Epv2_total H"
+    address: 65
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1 
+
+  - platform: modbus_controller
+    name: "${name} 0091 Epv_total H"
+    address: 91
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1 
+
+  - platform: modbus_controller
+    name: "${name} 1009 Pdischarge1 H"
+    address: 1009
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1011 PCharge1 H"
+    address: 1011
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1013 VBat"
+    address: 1013
+    register_type: "read"
+    unit_of_measurement: V
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1014 SOC"
+    address: 1014
+    register_type: "read"
+    unit_of_measurement: "%"
+    value_type: U_WORD
+    accuracy_decimals: 1
+
+  - platform: modbus_controller
+    name: "${name} 1015 Pac to user R H"
+    address: 1015
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1017 Pac to user S H"
+    address: 1017
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1019 Pac to user T H"
+    address: 1019
+    register_type: "read"
+    unit_of_measurement: W
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1021 PactouserTotal H"
+    address: 1021
+    register_type: "read"
+    unit_of_measurement: W
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1     
+
+  - platform: modbus_controller
+    name: "${name} 1029  Pactogrid total H"
+    address: 1029
+    register_type: "read"
+    unit_of_measurement: W
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1037  PlocalLoad total H"
+    address: 1037
+    register_type: "read"
+    unit_of_measurement: W
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1040  Battery temperature"
+    address: 1040
+    register_type: "read"
+    unit_of_measurement: C
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1044 Energy to user today high"
+    address: 1044
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1046 Energy to user total high"
+    address: 1046
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1048 Energy to grid today high"
+    address: 1048
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1050 Energy to grid total high"
+    address: 1050
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "Battery discharged today"
+    address: 1052
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1054 Energy discharged total high"
+    address: 1054
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1056 Energy charged today high"
+    address: 1056
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1058 Energy charged total high"
+    address: 1058
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1060 Energy Local load today high"
+    address: 1060
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+  - platform: modbus_controller
+    name: "${name} 1062 Energy Local load total high"
+    address: 1062
+    register_type: "read"
+    unit_of_measurement: kWh
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+
+
+  - platform: modbus_controller
+    name: "Battery charged today H"
+    address: 1124
+    register_type: "read"
+    value_type: U_DWORD
+    accuracy_decimals: 1   
+
+  - platform: modbus_controller
+    name: "${name} 1126 ACCharge Energy Total H"
+    address: 1125
+    register_type: "read"
+    value_type: U_DWORD
+    accuracy_decimals: 1
+
+
+
+  - platform: modbus_controller
+    name: "${name} 0026 EnergyToday"
+    address: 26
+    register_type: "read"
+    unit_of_measurement: kWh
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+    
+  - platform: modbus_controller
+    name: "${name} 0028 EnergyTotal"
+    address: 28
+    register_type: "read"
+    unit_of_measurement: kWh
+    state_class: total_increasing
+    device_class: energy
+    icon: mdi:flash
+    value_type: U_DWORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
+
+    
+  - platform: modbus_controller
+    name: "${name} 0032 Temperature"
+    address: 32
+    register_type: "read"
+    unit_of_measurement: C
+    icon: mdi:thermometer
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+    - multiply: 0.1
